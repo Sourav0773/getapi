@@ -1,32 +1,36 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:get_api_practice/model.dart';
 
-void getApi() async {
+Future<List<Model>> getApi() async {
   final dio = Dio();
   try {
-    final response = await dio.get(
-      'https://userdata-backend-w4gc.onrender.com/users',
-    );
+    //step 1 calling the api
+    final response = await dio.get('https://userdata-backend-w4gc.onrender.com/users');
+    //step 2 check weather the response is OK (statuscode 200)
     if (response.statusCode == 200) {
-      if (kDebugMode) {
-        print(response.data);
-      }
+      //step 3 store the data coming from api response
+      List<dynamic> getApiData = response.data;
+      //step 4 convert the  json data to list to store it in data model class
+      List<Model> dataModel = getApiData.map((json) => Model.fromJson(json)).toList();
+      //print(dataModel);
+      return dataModel;
     } else {
-      if (kDebugMode) {
-        print('Error: ${response.statusCode}');
-      }
+      throw Exception("Failed to load data");
     }
   } catch (e) {
     if (kDebugMode) {
       print("Error is $e");
     }
+    return [];
   }
+}
 
   //some data operations(10,000 data present)
 
-  ////List<dynamic> data = request.data;
+  //List<dynamic> data = request.data;
 
-  ////print(data.length);
+  //print(data.length);
 
   //first 10 data
   //for (int i = 0; i < 10 && i < data.length; i++) {
@@ -52,4 +56,3 @@ void getApi() async {
   //for (int b = data.length - 2000; b >= 7995; b--) {
   //  print("Data from $b index is ${data[b]}");
   //}
-}

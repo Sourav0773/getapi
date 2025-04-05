@@ -1,25 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:get_api_practice/api.dart';
+import 'package:get_api_practice/displaying_data.dart';
 
-class GetApiApp extends StatefulWidget {
-  const GetApiApp({super.key});
-
-  @override
-  State<GetApiApp> createState() {
-    return GetApiState();
-  }
-}
-
-class GetApiState extends State<GetApiApp> {
-  
-  @override
-  void initState() {
-    super.initState();
-    getApi();
-  }
-
+class GetApi extends StatelessWidget {
+  const GetApi({super.key});
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: Scaffold(body: Center(child: Text('Hi'))));
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: DisplayingData(),
+    );
   }
 }
