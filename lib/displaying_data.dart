@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get_api_practice/initial_page.dart';
+import 'package:get_api_practice/api.dart';
+import 'package:get_api_practice/model.dart';
 
 class DisplayingData extends StatefulWidget {
   const DisplayingData({super.key});
@@ -12,12 +13,6 @@ class DisplayingData extends StatefulWidget {
 
 class DisplayingDataState extends State<DisplayingData> {
   @override
-  void initState() {
-    super.initState();
-    GetApi();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -27,14 +22,66 @@ class DisplayingDataState extends State<DisplayingData> {
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20),
-        child: ListView.builder(
-          itemBuilder: (context, index) {
-            return ListTile(
-              title: Text('Item $index'),
-            );
+        child: FutureBuilder<List<Model>>(
+          future: getApi(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: Padding(
+                  padding: EdgeInsets.all(40),
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            } else if (snapshot.hasData) {
+              final data = snapshot.data!;
+              return buildLists(data);
+            } else {
+              return const Text('No data!!');
+            }
           },
         ),
       ),
     );
   }
+}
+
+Widget buildLists(List<Model> data) {
+  return ListView.builder(
+    itemCount: data.length,
+    itemBuilder: (context, index) {
+      final datas = data[index];
+      return Padding(
+        padding: EdgeInsets.all(20),
+        child: Container(
+          height: 200,
+          width: 300,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: const Color.fromARGB(255, 225, 223, 223),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black26,
+                offset: Offset(5, 5),
+                blurRadius: 7,
+              ),
+            ]
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(20),
+            child: Column(
+              children: [
+                Text("ID: ${datas.id}"),
+                SizedBox(height: 20),
+                Text("NAME: ${datas.name}"),
+                SizedBox(height: 20),
+                Text("EMAIL: ${datas.email}"),
+                SizedBox(height: 20),
+                Text("PHONE: ${datas.phone}"),
+              ],
+            ),
+          ),
+        ),
+      );
+    },
+  );
 }
